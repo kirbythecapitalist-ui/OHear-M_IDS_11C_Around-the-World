@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<!-- saved from url=(0080)file:///C:/Users/Owner/Downloads/test%20website/round%20the%20world/rndwrld.html -->
+<html lang="en"><!--HTML--><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">  
+    <title>Around the World Project</title>
+</head>
+
+
+<body>
+    
+    <section id="titleText">
+        <h5 id="name"><logo_centered>Michael O'Hear 11C IDS </logo_centered></h5>
+        <h1 id="titleone"> <logo_leftalligned>Around the World</logo_leftalligned> </h1>
+        <h1 id="blank_space"> </h1>   
+    </section>
+
+    <section id="image_space">
+        <img src="./Around the World Project progress_files/karte-0-9000-en.gif" alt="world_map" width="900" height="600">
+    </section>
+     <section id="mathHUD">
+        <output id="distance_display">2547.32</output>
+        <output id="distance_display2">4038.65</output>
+        <output id="distance_display3">1357.32</output>
+        <output id="distance_display4">6079.46</output>
+    </section>
+
+<section id="text_input_container">
+<section id="input_text">
+  <input type="text" id="button_one_text" placeholder="Type (latitude,longitude)">
+  <input type="text" id="button_two_text" placeholder="Type (latitude,longitude)">
+  <input type="text" id="button_three_text" placeholder="Type (latitude,longitude)">
+</section>
+</section>
+
+    <section id="button_container">
+    <section id="buttons">
+
+        <button id="send_first_coordpair">
+        Send 1st Coords
+        </button>
+ 
+    <button id="send_second_coordpair">
+    Send 2nd Coords
+    </button>
+ 
+        <button id="send_third_coordpair">
+        Send 3rd Coords
+        </button>
+    
+    </section>
+</section>
+
+
+<style>
+    body{
+     background:lightblue;   
+    }
+    header {
+        font-family:fantasy;
+         color:black;
+    }
+    h1{
+        color:black;
+    }
+     h4{
+        color:black;
+       
+    }
+     h3{
+        color:black;
+       
+    }
+    
+ 
+    #name{
+     height:20px; 
+     text-align: center; 
+     font-size: 20px;
+     margin-left: 105px;
+    }
+    #titleone{
+     height:86px;
+     margin-left:100px;
+     text-align: center;
+     font-size: 75px;
+    }
+    #blank_space2{
+    font-size: 0.1px;
+    height: 25px;
+    }
+    #titletext{
+     border-style:solid;
+     border-color: white;
+     border-width: 7px;
+    }
+     #space{
+     width: 100%;
+     border-style:solid;
+     border-color: white;
+     border-width: 7px;
+    }
+    #button_container{
+     width: 100%;
+    display: flex;
+    justify-content:center;
+    }
+   #buttons{
+    display: inline-flex;
+    flex-direction: row;
+    gap: 30px;
+   }
+   #send_first_coordpair{
+    width: 350px;
+    height: 75px;
+    border-style: solid;
+    border-width: 5px;
+    border-radius: 20px;
+    font-size: 30px;
+    background-color: plum;
+    margin-left: 70px;
+   }
+   #send_second_coordpair{
+    width: 350px;
+    height: 75px;
+    border-style: solid;
+    border-width: 5px;
+    border-radius: 20px;
+    font-size: 30px;
+    background-color: plum;
+   }
+   #send_third_coordpair{
+    width: 350px;
+    height: 75px;
+    border-style: solid;
+    border-width: 5px;
+    border-radius: 20px;
+    font-size: 30px;
+    background-color: plum;
+   }
+   #image_space{
+   text-align: center;
+   margin-left: 75px;
+   margin-bottom:25px;
+   }
+   img{
+    border-style:solid;
+    border-width: 4px;
+
+   }
+   #input_text_container{
+     width: 100%;
+    display: flex;
+    justify-content:center;
+    }
+    #input_text{
+    display: flex;
+    flex-direction: row;
+    gap: 30px;
+    justify-content: center;
+    margin-top: 25px;
+    margin-bottom: 25px;
+    margin-left: 75px;
+   }
+   #distance_display,#distance_display2,#distance_display3,#distance_display4{
+    background-color: aqua;
+   }
+</style>
+<!--Javascript-->
+<script>
+const input1 = document.getElementById('button_one_text');
+const input2 = document.getElementById('button_two_text');
+const input3 = document.getElementById('button_three_text');
+const la_ref= 42.5735402;
+const lo_ref =-83.0569237;
+
+function processInputs(){
+const rawText1 = input1.value;
+const numbers1 = rawText1.match(/-?\d+\.?\d*/g);
+const rawText2 = input2.value;
+const numbers2 = rawText2.match(/-?\d+\.?\d*/g); 
+const rawText3 = input3.value;
+const numbers3 = rawText3.match(/-?\d+\.?\d*/g); 
+
+let latitude1,longitude1,latitude2,longitude2,latitude3,longitude3;
+ 
+    if (numbers1 && numbers2 && numbers3 && 
+        numbers1.length >= 2 && numbers2.length >= 2 && numbers3.length >= 2) {
+    
+    latitude1 = parseFloat(numbers1[0]);
+    longitude1 = parseFloat(numbers1[1]);
+    latitude2 = parseFloat(numbers2[0]);
+    longitude2 = parseFloat(numbers2[1]);
+    latitude3 = parseFloat(numbers3[0]);
+    longitude3 = parseFloat(numbers3[1]);
+    
+    const distance_Hto1 = calculateDistance(la_ref, lo_ref, latitude1, longitude1);
+    const distance_1to2 = calculateDistance(latitude1, longitude1, latitude2, longitude2);
+    const distance_2to3 = calculateDistance(latitude2, longitude2, latitude3, longitude3);
+    const distance_Hto3 = calculateDistance(la_ref, lo_ref, latitude3, longitude3);
+    
+    document.getElementById('distance_display').textContent = distance_Hto1;
+    document.getElementById('distance_display2').textContent = distance_1to2;
+    document.getElementById('distance_display3').textContent = distance_2to3;
+    document.getElementById('distance_display4').textContent = distance_Hto3;
+    
+    console.log (distance_Hto1);
+    console.log (distance_1to2);
+    console.log (distance_2to3);
+    console.log (distance_Hto3);
+
+    }
+}
+function calculateDistance(lat1, lon1, lat2, lon2) {
+    const R = 3963.1; // Earth's radius in miles
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a = 
+        Math.sin(dLat/2) * Math.sin(dLat/2) +
+        Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+        Math.sin(dLon/2) * Math.sin(dLon/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    const distance = R * c;
+    return distance.toFixed(2);
+}
+const button1 = document.getElementById('send_first_coordpair');
+const button2 = document.getElementById('send_second_coordpair');
+const button3 = document.getElementById('send_third_coordpair');
+button1.addEventListener('click', processInputs);
+button2.addEventListener('click', processInputs);
+button3.addEventListener('click', processInputs);
+
+
+</script>
+</body><!--CSS--></html>
