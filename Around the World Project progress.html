@@ -74,7 +74,19 @@
     </section>
 </section>
 
+<section id = the_why>
+This purpose of this project was to get more practice in coding. 
+I've become pretty comfortable in Javascript, and decided to dabble in HTML and css
+(I also needed to make a website for NHS, 
+and this helped me get used to the languages before making something profesional)
+The function of this website is to input 3 coordinate pairs and output the distance between them
+(and between the reference point, and the 1st  point, and the reference point and the 3rd point)
+The distance is calculated using Haversine instead of spherical law of cosines because it's more accurate
+if I used sphereical law, I can find the distance within 10 miles
+but with haversine, I can find the dead center of Julian's house.
+Both Decimal Degrees and DMS can be processed as inputs, so long as they're not mixed and matched within coordinate pairs.
 
+</section>
 </body>
 <!--CSS-->
 <style>
@@ -263,6 +275,14 @@
     margin-left:75px;
     font-size:30px;
 }
+#the_why{
+    background-color: plum;
+    padding:5px;
+    margin:20px;
+    border-style: solid;
+    border-width: 2px;
+    border-radius: 5px;
+}
 </style>
 <!--Javascript-->
 <script>
@@ -274,9 +294,9 @@ const Audio_button = document.getElementById('toggle_audio');
 //const audio = new Audio("https://dl.dropboxusercontent.com/scl/fi/rbdl8y5wcq3fmr2h9qi32/Phantom-of-Hopes-and-Dreams-DELTARUNE-x-PERSONA-5-REMIX.mp3?rlkey=69spbjs54bxq501a6v6vgtj1s&st=uta7006i&raw=1");
 const audio = new Audio("https://dl.dropbox.com/scl/fi/6bsf7apmgg722ga2i6o9z/cropped-audio.mp3?rlkey=v7w3yl7i5ge87hl3jawtie07u&st=18w5yemd&raw=1");
 audio.loop = true;
-const la_ref = 42.5735402;
+const la_ref = 42.5735402;//the dead center of my house
 const lo_ref = -83.0569237;
-let DMS1 = false;
+let DMS1 = false;//defaulted to false
 let DMS2 = false;
 let DMS3 = false;
 let DMS_usage = "no";
@@ -285,7 +305,11 @@ let audioStarted = false;
 let latitude1, longitude1, latitude2, longitude2, latitude3, longitude3;
 let deg1, deg2, deg3, deg4, deg5, deg6, min1, min2, min3, min4, min5, min6, sec1, sec2, sec3, sec4, sec5, sec6;
 
-
+//I didn't think this would actually work so I put the CSS stuff in here too to make it easier to delete
+// but hey it does work so nice
+//(ctx means "hey im doing css in javascript instead of a designated css tab"
+//<style> similarly means ""hey im doing css in html instead of a designated css tab"
+// and <script> means "hey im doing javascript in html instead of a designated javascript tab")
 const canvas = document.createElement('canvas');
 canvas.width = 900;
 canvas.height = 600;
@@ -294,21 +318,21 @@ canvas.style.left = '75px';
 canvas.style.top = '0';
 canvas.style.pointerEvents = 'none';
 canvas.style.zIndex = '10';
-document.getElementById('image_space').appendChild(canvas);
-const ctx = canvas.getContext('2d');
+document.getElementById('image_space').appendChild(canvas);//I append the child to the canvas using a staple gu I mean using ();
+const ctx = canvas.getContext('2d');// the canvas/map overlay is 2d because it has length and a width but no height
 
 
 const longitudeShift = -75.5; 
 const equatorOffset = 5;      
 
 function latLongToPixel(lat, lon) {
-    const mapWidth = 900;
+    const mapWidth = 900;//boundries of world map are same, since, you know, it's an overlay
     const mapHeight = 600;
     
     
-    let adjustedLon = lon - longitudeShift;
-    if (adjustedLon < -180) adjustedLon += 360;
-    if (adjustedLon > 180) adjustedLon -= 360;
+    let adjustedLon = lon - longitudeShift;// adjusted long and equator offset were found using trial and error
+    if (adjustedLon < -180) adjustedLon += 360;//making it a function where I change two numbers instead of 6 is nice
+    if (adjustedLon > 180) adjustedLon -= 360;//it took (13 attempts)
     
     let x = ((adjustedLon + 180) / 360) * mapWidth;
     
@@ -323,11 +347,12 @@ function verifyCalibration() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     
    
-    const michiganPos = latLongToPixel(la_ref, lo_ref);
-    
+    const michiganPos = latLongToPixel(la_ref, lo_ref);//michiganPos is obviously short for michigan position
+    //but we also do these activities in english class called "Parts of Speech" or P.O.S.
+    //POS also can mean piece of **** so I thought the triple meaning was fun(ny);
     
     ctx.beginPath();
-    ctx.fillStyle = 'blue';
+    ctx.fillStyle = 'blue';// go blue!
     ctx.arc(michiganPos.x, michiganPos.y, 4, 0, Math.PI * 2);
     ctx.fill();
     ctx.strokeStyle = 'white';
@@ -339,11 +364,11 @@ function verifyCalibration() {
     ctx.font = '10px Arial';
     ctx.fillText('Michigan', michiganPos.x + 6, michiganPos.y - 6);
     
-    console.log("Calibration verified. Michigan should be in correct location.");
+    console.log("Calibration calibrated. Michigan should be in correct location. if not call 858-924-0180");// : )
 }
 
 function plotPointsAndLines() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+     ctx.clearRect(0, 0, canvas.width, canvas.height);
     
     const homePos = latLongToPixel(la_ref, lo_ref);
     const pos1 = latLongToPixel(latitude1, longitude1);
@@ -393,15 +418,15 @@ function plotPointsAndLines() {
 }
 
 function isDMS() {
-    const commaCount1 = (input1.value.match(/,/g) || []).length;
-    const commaCount2 = (input2.value.match(/,/g) || []).length;
+    const commaCount1 = (input1.value.match(/,/g) || []).length;//is supposed to detect and declare that 3+ commas will be DMS regardless of symbols
+    const commaCount2 = (input2.value.match(/,/g) || []).length;//but the math part doesnt work and im too busy to debug at this time
     const commaCount3 = (input3.value.match(/,/g) || []).length;
 
-    const symbolCheck1 = /[°'"]/.test(input1.value);
+    const symbolCheck1 = /[°'"]/.test(input1.value);//if you have these symbols then it's DMS. simple
     const symbolCheck2 = /[°'"]/.test(input2.value);
     const symbolCheck3 = /[°'"]/.test(input3.value);
 
-    DMS1 = commaCount1 >= 2 || symbolCheck1;
+    DMS1 = commaCount1 >= 2 || symbolCheck1;// either check passes than it's probably DMS
     DMS2 = commaCount2 >= 2 || symbolCheck2;
     DMS3 = commaCount3 >= 2 || symbolCheck3;
 }
@@ -413,18 +438,20 @@ function DMSconversion(numbers1, numbers2, numbers3, direction1, direction2, dir
         min1 = parseFloat(numbers1[1]); 
         sec1 = parseFloat(numbers1[2]);
         deg2 = parseFloat(numbers1[3]); 
-        min2 = parseFloat(numbers1[4]); 
+        min2 = parseFloat(numbers1[4]);// I mostly commented from down up, so check dms3
         sec2 = parseFloat(numbers1[5]);
         
         latitude1 = deg1 + (min1/60) + (sec1/3600);//this is why you cant mix units in the same coordinate pair
         longitude1 = deg2 + (min2/60) + (sec2/3600);// if one is DMS, it'll put both through this conversion
         
+        if(symbolCheck1){
         if (direction1[0] && direction1[0].toUpperCase() === 'S') latitude1 = -latitude1;
         if (direction1[1] && direction1[1].toUpperCase() === 'W') longitude1 = -longitude1;
         else if (direction1[0] && direction1[0].toUpperCase() === 'W') longitude1 = -longitude1;
         console.log(latitude1);
         console.log(longitude1);
-        
+        }
+
     } else {
         latitude1 = parseFloat(numbers1[0]);
         longitude1 = parseFloat(numbers1[1]);
@@ -441,11 +468,13 @@ function DMSconversion(numbers1, numbers2, numbers3, direction1, direction2, dir
         latitude2 = deg3 + (min3/60) + (sec3/3600);
         longitude2 = deg4 + (min4/60) + (sec4/3600);
         
+         if(symbolCheck2){
         if (direction2[0] && direction2[0].toUpperCase() === 'S') latitude2 = -latitude2;
         if (direction2[1] && direction2[1].toUpperCase() === 'W') longitude2 = -longitude2;
         else if (direction2[0] && direction2[0].toUpperCase() === 'W') longitude2 = -longitude2;
         console.log(latitude2);
         console.log(longitude2);
+         }
 
     } else {
         latitude2 = parseFloat(numbers2[0]);
@@ -453,48 +482,50 @@ function DMSconversion(numbers1, numbers2, numbers3, direction1, direction2, dir
     
     }
     
-    if (DMS3) {
-        deg5 = parseFloat(numbers3[0]); 
-        min5 = parseFloat(numbers3[1]); 
-        sec5 = parseFloat(numbers3[2]);
-        deg6 = parseFloat(numbers3[3]); 
-        min6 = parseFloat(numbers3[4]); 
-        sec6 = parseFloat(numbers3[5]);
+    if (DMS3) {//if inputted correctly
+        deg5 = parseFloat(numbers3[0]); //first valid instance will be degree
+        min5 = parseFloat(numbers3[1]); //second valid instance will be minute
+        sec5 = parseFloat(numbers3[2]); //third valid instance will be second
+        deg6 = parseFloat(numbers3[3]); //fourth valid instance will be degree
+        min6 = parseFloat(numbers3[4]); //fifth valid instance will be minute
+        sec6 = parseFloat(numbers3[5]); //sixth valid instance will be second
         
         latitude3 = deg5 + (min5/60) + (sec5/3600);
-        longitude3 = deg6 + (min6/60) + (sec6/3600);
+        longitude3 = deg6 + (min6/60) + (sec6/3600);//conversion
         
-        if (direction3[0] && direction3[0].toUpperCase() === 'S') latitude3 = -latitude3;
+         if(symbolCheck3){
+        if (direction3[0] && direction3[0].toUpperCase() === 'S') latitude3 = -latitude3;//if south, or west is detected flip the sign
         if (direction3[1] && direction3[1].toUpperCase() === 'W') longitude3 = -longitude3;
         else if (direction3[0] && direction3[0].toUpperCase() === 'W') longitude3 = -longitude3;
-        
+         }
+
         console.log(latitude3);
         console.log(longitude3);
     } else {
-        latitude3 = parseFloat(numbers3[0]);
+        latitude3 = parseFloat(numbers3[0]);//else already is lat/long
         longitude3 = parseFloat(numbers3[1]);
     }
 }
 
 function processInputs() {
-    const direction1 = input1.value.match(/[NWES]/gi) || [];
+    const direction1 = input1.value.match(/[NWES]/gi) || [];//find and store direction or is null
     const direction2 = input2.value.match(/[NWES]/gi) || [];
     const direction3 = input3.value.match(/[NWES]/gi) || [];
     
-    const numbers1 = input1.value.match(/-?\d+\.?\d*/g) || [];
-    const numbers2 = input2.value.match(/-?\d+\.?\d*/g) || [];
-    const numbers3 = input3.value.match(/-?\d+\.?\d*/g) || [];
+    const numbers1 = input1.value.match(/-?\d+\.?\d*/g) || [];//this is a weird line but essentially
+    const numbers2 = input2.value.match(/-?\d+\.?\d*/g) || [];// marks the begining and end of the regex literal -? means include negative numbers
+    const numbers3 = input3.value.match(/-?\d+\.?\d*/g) || [];//\means more than one digit .? means decimal place /d* means one or more zeroes after decimal place
 
-    if (numbers1.length >= 2 && numbers2.length >= 2 && numbers3.length >= 2) {
+    if (numbers1.length >= 2 && numbers2.length >= 2 && numbers3.length >= 2) {//if enough coords were inputted
         isDMS();
         DMSconversion(numbers1, numbers2, numbers3, direction1, direction2, direction3);
         
-        const distance_Hto1 = calculateDistance(la_ref, lo_ref, latitude1, longitude1);
+        const distance_Hto1 = calculateDistance(la_ref, lo_ref, latitude1, longitude1);//calculates distance between each point
         const distance_1to2 = calculateDistance(latitude1, longitude1, latitude2, longitude2);
         const distance_2to3 = calculateDistance(latitude2, longitude2, latitude3, longitude3);
         const distance_Hto3 = calculateDistance(la_ref, lo_ref, latitude3, longitude3);
         
-        document.getElementById('distance_display').textContent = "Distance from P0 to P1: "+ distance_Hto1;
+        document.getElementById('distance_display').textContent = "Distance from P0 to P1: "+ distance_Hto1;//send results to textbox
         document.getElementById('distance_display2').textContent = "Distance from P1 to P2: "+ distance_1to2;
         document.getElementById('distance_display3').textContent = "Distance from P2 to P3: "+ distance_2to3;
         document.getElementById('distance_display4').textContent = "Distance from P0 to P3: "+ distance_Hto3;
@@ -504,17 +535,17 @@ function processInputs() {
     }
 }
 
-function calculateDistance(lat1, lon1, lat2, lon2) {
-    const R = 3963.1;
-    const dLat = (lat2 - lat1) * Math.PI / 180;
-    const dLon = (lon2 - lon1) * Math.PI / 180;
-    const a = 
-        Math.sin(dLat/2) * Math.sin(dLat/2) +
-        Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
-        Math.sin(dLon/2) * Math.sin(dLon/2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-    const distance = R * c;
-    return distance.toFixed(5); //reference point goes up to 5 decimals
+function calculateDistance(lat1, lon1, lat2, lon2) {//subsitutes parameters in for lat1,lat2,lon1,lon2
+    const R = 3963.1;//radius of the earth miles 
+    const dLat = (lat2 - lat1) * Math.PI / 180;//find the difference between latitudes in radians
+    const dLon = (lon2 - lon1) * Math.PI / 180;//find the difference between longitudes in radians
+    const a = //a equals
+        Math.sin(dLat/2) * Math.sin(dLat/2) + //sin of (latitude difference time/2) times sin of (latitude difference time/2) plus
+        Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * //cos of (lat1 in radians) times cos of (lat2 in radians) times
+        Math.sin(dLon/2) * Math.sin(dLon/2);//sin of (longitude difference/2) times sin of (longitude difference/2)
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));// c equals the inverse tangent of(square root a, squareroot(1-a))
+    const distance = R * c;//distance traveled equals radius times c
+    return distance.toFixed(2); //reference point goes up to 2 decimals
 }
 
 //function calculateDistance(){Distance = acos(SIN(lat1)*SIN(lat2)+COS(lat1)*COS(lat2)*COS(lon2-lon1))*6371}
@@ -526,15 +557,15 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
 // Here's an article explaining it, too https://gis.stackexchange.com/questions/4906/why-is-law-of-cosines-more-preferable-than-haversine-when-calculating-distance-b
 
 function audioCheck() {
-     if (!audioStarted) {
-        audio.play();
-         audio.play().catch(e => {
-        console.log("It's no longer TV Time :");
+     if (!audioStarted) {//if audio is not playing
+        audio.play();//play audio
+         audio.play().catch(e => {//if audio doesn't play for some reason
+        console.log("It's no longer TV Time :");// it's no longer TV Time : (
     });
     }
 }
 
-const verifyButton = document.createElement('button');
+const verifyButton = document.createElement('button');//old debug button that verifies the plotted path, not the calculations
 verifyButton.textContent = 'Verify Calibration';
 verifyButton.style.margin = '10px';
 verifyButton.addEventListener('click', verifyCalibration);
@@ -542,21 +573,24 @@ document.getElementById('button_container').appendChild(verifyButton);
 
 
 const button1 = document.getElementById('send_first_coordpair');
-const button2 = document.getElementById('send_second_coordpair');
+const button2 = document.getElementById('send_second_coordpair');//defining buttons
 const button3 = document.getElementById('send_third_coordpair');
 button1.addEventListener('click', processInputs);
-button2.addEventListener('click', processInputs);
+button2.addEventListener('click', processInputs);//defining listeners for the buttons
 button3.addEventListener('click', processInputs);
 
 Audio_button.addEventListener('click', function() {
     audioStarted = true;
     Audio_button.textContent = "Audio Enabled";
     audio.play().catch(e => {
-        console.log("It's TV Time");
+        console.log("It's TV Time");// It's TV TIME!!:)
+        //https://tenor.com/view/deltarune-tenna-toby-fox-dance-dancing-gif-5207501875076637668
     });
 });
 document.addEventListener('mousemove', audioCheck);
-
+//I originally wanted to circumvent the lack of autoplay by making something as simple as mouse moving a trigger
+// but apparently that was too cheesy and was considered to be the same thing as autoplaying
+//so now there's a button, but I'm not going to risk breaking anything even though the uncommented line above is seemingly redundant
 setTimeout(verifyCalibration, 1000);
 
 </script>
