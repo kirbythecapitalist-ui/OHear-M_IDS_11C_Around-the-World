@@ -30,6 +30,7 @@
             <li id = list2><output id="distance_display2">Distance from P1 to P2: 0</output></li>
             <li id = list3><output id="distance_display3">Distance from P2 to P3: 0</output></li>
             <li id = list4><output id="distance_display4">Distance from P0 to P3: 0</output></li>
+            <li id = list5><output id="total_distance">total: 0</output></li>
             <li id = DMS_output><output id="DMS_check">No DMS was found :3</output></li>
         </ul>
     </section>
@@ -76,17 +77,20 @@
 
 <section id = the_why>
 This purpose of this project was to get more practice in coding. 
-I've become pretty comfortable in Javascript, and decided to dabble in HTML and css
+I've become pretty comfortable in Javascript, and decided to dabble in HTML and CSS
 (I also needed to make a website for NHS, 
 and this helped me get used to the languages before making something profesional)
 The function of this website is to input 3 coordinate pairs and output the distance between them
 (and between the reference point, and the 1st  point, and the reference point and the 3rd point)
-The distance is calculated using Haversine instead of spherical law of cosines because it's more accurate
-if I used sphereical law, I can find the distance within 10 miles
-but with haversine, I can find the dead center of Julian's house.
-Both Decimal Degrees and DMS can be processed as inputs, so long as they're not mixed and matched within coordinate pairs.
-
+The distance is calculated using Haversine instead of spherical law of cosines because it's more accurate.
+If I used sphereical law, I can find the distance within 10 miles.
+With haversine, I can find the dead center of Julian's house.
+Both Decimal Degrees and DMS can be processed as inputs, so long as they're not mixed and matched within coordinate pairs.(Make sure to use symbols!)
+One final note, total distance is the total distance of a one way trip, not a round trip.
 </section>
+<button id = reset_button>
+    Reset Button
+</button>
 </body>
 <!--CSS-->
 <style>
@@ -283,6 +287,14 @@ Both Decimal Degrees and DMS can be processed as inputs, so long as they're not 
     border-width: 2px;
     border-radius: 5px;
 }
+#reset_button{
+    background-color: plum;
+    padding:5px;
+    margin:20px;
+    border-style: solid;
+    border-width: 2px;
+    border-radius: 5px;
+}
 </style>
 <!--Javascript-->
 <script>
@@ -290,8 +302,6 @@ const input1 = document.getElementById('button_one_text');
 const input2 = document.getElementById('button_two_text');
 const input3 = document.getElementById('button_three_text');
 const Audio_button = document.getElementById('toggle_audio');
-//const audio = document.getElementById('music');
-//const audio = new Audio("https://dl.dropboxusercontent.com/scl/fi/rbdl8y5wcq3fmr2h9qi32/Phantom-of-Hopes-and-Dreams-DELTARUNE-x-PERSONA-5-REMIX.mp3?rlkey=69spbjs54bxq501a6v6vgtj1s&st=uta7006i&raw=1");
 const audio = new Audio("https://dl.dropbox.com/scl/fi/6bsf7apmgg722ga2i6o9z/cropped-audio.mp3?rlkey=v7w3yl7i5ge87hl3jawtie07u&st=18w5yemd&raw=1");
 audio.loop = true;
 const la_ref = 42.5735402;//the dead center of my house
@@ -305,11 +315,6 @@ let audioStarted = false;
 let latitude1, longitude1, latitude2, longitude2, latitude3, longitude3;
 let deg1, deg2, deg3, deg4, deg5, deg6, min1, min2, min3, min4, min5, min6, sec1, sec2, sec3, sec4, sec5, sec6;
 
-//I didn't think this would actually work so I put the CSS stuff in here too to make it easier to delete
-// but hey it does work so nice
-//(ctx means "hey im doing css in javascript instead of a designated css tab"
-//<style> similarly means ""hey im doing css in html instead of a designated css tab"
-// and <script> means "hey im doing javascript in html instead of a designated javascript tab")
 const canvas = document.createElement('canvas');
 canvas.width = 900;
 canvas.height = 600;
@@ -321,7 +326,6 @@ canvas.style.zIndex = '10';
 document.getElementById('image_space').appendChild(canvas);//I append the child to the canvas using a staple gu I mean using ();
 const ctx = canvas.getContext('2d');// the canvas/map overlay is 2d because it has length and a width but no height
 
-
 const longitudeShift = -75.5; 
 const equatorOffset = 5;      
 
@@ -329,24 +333,20 @@ function latLongToPixel(lat, lon) {
     const mapWidth = 900;//boundries of world map are same, since, you know, it's an overlay
     const mapHeight = 600;
     
-    
     let adjustedLon = lon - longitudeShift;// adjusted long and equator offset were found using trial and error
     if (adjustedLon < -180) adjustedLon += 360;//making it a function where I change two numbers instead of 6 is nice
     if (adjustedLon > 180) adjustedLon -= 360;//it took (13 attempts)
     
     let x = ((adjustedLon + 180) / 360) * mapWidth;
     
-  
     let y = (90 - lat) * (mapHeight / 180) + equatorOffset;
     
     return { x, y };
 }
 
-
 function verifyCalibration() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     
-   
     const michiganPos = latLongToPixel(la_ref, lo_ref);//michiganPos is obviously short for michigan position
     //but we also do these activities in english class called "Parts of Speech" or P.O.S.
     //POS also can mean piece of **** so I thought the triple meaning was fun(ny);
@@ -359,7 +359,6 @@ function verifyCalibration() {
     ctx.lineWidth = 1;
     ctx.stroke();
     
-  
     ctx.fillStyle = 'darkblue';
     ctx.font = '10px Arial';
     ctx.fillText('Michigan', michiganPos.x + 6, michiganPos.y - 6);
@@ -375,7 +374,6 @@ function plotPointsAndLines() {
     const pos2 = latLongToPixel(latitude2, longitude2);
     const pos3 = latLongToPixel(latitude3, longitude3);
     
-    
     ctx.beginPath();
     ctx.strokeStyle = 'rgba(255, 0, 0, 0.7)';
     ctx.lineWidth = 1.5;
@@ -384,7 +382,6 @@ function plotPointsAndLines() {
     ctx.lineTo(pos2.x, pos2.y);
     ctx.lineTo(pos3.x, pos3.y);
     ctx.stroke();
-    
     
     const drawSmallPoint = (x, y, color) => {
         ctx.beginPath();
@@ -396,7 +393,6 @@ function plotPointsAndLines() {
         ctx.stroke();
     };
     
-
     ctx.beginPath();
     ctx.fillStyle = 'blue';
     ctx.arc(homePos.x, homePos.y, 4.5, 0, Math.PI * 2);
@@ -429,9 +425,13 @@ function isDMS() {
     DMS1 = commaCount1 >= 2 || symbolCheck1;// either check passes than it's probably DMS
     DMS2 = commaCount2 >= 2 || symbolCheck2;
     DMS3 = commaCount3 >= 2 || symbolCheck3;
+    
+    return { symbolCheck1, symbolCheck2, symbolCheck3 };
 }
 
-function DMSconversion(numbers1, numbers2, numbers3, direction1, direction2, direction3) {
+function DMSconversion(numbers1, numbers2, numbers3, direction1, direction2, direction3, symbolChecks) {
+    const { symbolCheck1, symbolCheck2, symbolCheck3 } = symbolChecks;
+    
     if(DMS1 || DMS2 || DMS3){ DMS_usage = "yes";}else{ DMS_usage = "no";}
     if (DMS1) {
         deg1 = parseFloat(numbers1[0]); 
@@ -517,18 +517,20 @@ function processInputs() {
     const numbers3 = input3.value.match(/-?\d+\.?\d*/g) || [];//\means more than one digit .? means decimal place /d* means one or more zeroes after decimal place
 
     if (numbers1.length >= 2 && numbers2.length >= 2 && numbers3.length >= 2) {//if enough coords were inputted
-        isDMS();
-        DMSconversion(numbers1, numbers2, numbers3, direction1, direction2, direction3);
+        const symbolChecks = isDMS();
+        DMSconversion(numbers1, numbers2, numbers3, direction1, direction2, direction3, symbolChecks);
         
         const distance_Hto1 = calculateDistance(la_ref, lo_ref, latitude1, longitude1);//calculates distance between each point
         const distance_1to2 = calculateDistance(latitude1, longitude1, latitude2, longitude2);
         const distance_2to3 = calculateDistance(latitude2, longitude2, latitude3, longitude3);
         const distance_Hto3 = calculateDistance(la_ref, lo_ref, latitude3, longitude3);
+        const totalDistance = (parseFloat(distance_Hto1) + parseFloat(distance_1to2) + parseFloat(distance_2to3)).toFixed(2);
         
         document.getElementById('distance_display').textContent = "Distance from P0 to P1: "+ distance_Hto1;//send results to textbox
         document.getElementById('distance_display2').textContent = "Distance from P1 to P2: "+ distance_1to2;
         document.getElementById('distance_display3').textContent = "Distance from P2 to P3: "+ distance_2to3;
         document.getElementById('distance_display4').textContent = "Distance from P0 to P3: "+ distance_Hto3;
+        document.getElementById('total_distance').textContent = "total distance: "+ totalDistance;
         document.getElementById('DMS_check').textContent = DMS_usage +" DMS used";
         
         plotPointsAndLines();
@@ -571,13 +573,14 @@ verifyButton.style.margin = '10px';
 verifyButton.addEventListener('click', verifyCalibration);
 document.getElementById('button_container').appendChild(verifyButton);
 
-
 const button1 = document.getElementById('send_first_coordpair');
 const button2 = document.getElementById('send_second_coordpair');//defining buttons
 const button3 = document.getElementById('send_third_coordpair');
+const Rbutton = document.getElementById('reset_button');
 button1.addEventListener('click', processInputs);
 button2.addEventListener('click', processInputs);//defining listeners for the buttons
 button3.addEventListener('click', processInputs);
+Rbutton.addEventListener('click', reset_function);
 
 Audio_button.addEventListener('click', function() {
     audioStarted = true;
@@ -593,5 +596,18 @@ document.addEventListener('mousemove', audioCheck);
 //so now there's a button, but I'm not going to risk breaking anything even though the uncommented line above is seemingly redundant
 setTimeout(verifyCalibration, 1000);
 
+function reset_function(){
+    document.getElementById('distance_display').textContent = "Distance from P0 to P1: 0";
+    document.getElementById('distance_display2').textContent = "Distance from P1 to P2: 0";
+    document.getElementById('distance_display3').textContent = "Distance from P2 to P3: 0";
+    document.getElementById('distance_display4').textContent = "Distance from P0 to P3: 0";
+    document.getElementById('total_distance').textContent = "total distance: ";
+    document.getElementById('DMS_check').textContent = "No DMS was found :3";
+    document.getElementById('button_one_text').value = "";
+    document.getElementById('button_two_text').value = "";
+    document.getElementById('button_three_text').value = "";
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    verifyCalibration();
+}
 </script>
 </html>
