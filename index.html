@@ -86,7 +86,6 @@ The distance is calculated using Haversine instead of spherical law of cosines b
 If I used sphereical law, I can find the distance within 10 miles.
 With haversine, I can find the dead center of Julian's house.
 Both Decimal Degrees and DMS can be processed as inputs, so long as they're not mixed and matched within coordinate pairs.(Make sure to use symbols!)
-One final note, total distance is the total distance of a one way trip, not a round trip.
 </section>
 <button id = reset_button>
     Reset Button
@@ -524,7 +523,7 @@ function processInputs() {
         const distance_1to2 = calculateDistance(latitude1, longitude1, latitude2, longitude2);
         const distance_2to3 = calculateDistance(latitude2, longitude2, latitude3, longitude3);
         const distance_Hto3 = calculateDistance(la_ref, lo_ref, latitude3, longitude3);
-        const totalDistance = (parseFloat(distance_Hto1) + parseFloat(distance_1to2) + parseFloat(distance_2to3)).toFixed(2);
+        const totalDistance = (parseFloat(distance_Hto1) + parseFloat(distance_1to2) + parseFloat(distance_2to3) + parseFloat(distance_Hto3)).toFixed(2);
         
         document.getElementById('distance_display').textContent = "Distance from P0 to P1: "+ distance_Hto1;//send results to textbox
         document.getElementById('distance_display2').textContent = "Distance from P1 to P2: "+ distance_1to2;
