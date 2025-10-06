@@ -41,7 +41,7 @@
             <li id = list6>Each point must have both coords in the same notation</li>
             <li id = list7>Ex. (latitude,longitude) and (DMS, DMS) works </li>
             <li id = list8>Ex. (latitude, DMS) and (DMS, longitude) does not</li>
-            <li id = list9>All buttons do the same thing</li>
+            <li id = list9>All buttons do the same thing (triggering the math function) and there are 3 solely for asthtetic purposes</li>
        
         </ul>
     </section>
@@ -86,6 +86,15 @@ The distance is calculated using Haversine instead of spherical law of cosines b
 If I used sphereical law, I can find the distance within 10 miles.
 With haversine, I can find the dead center of Julian's house.
 Both Decimal Degrees and DMS can be processed as inputs, so long as they're not mixed and matched within coordinate pairs.(Make sure to use symbols!)
+Example: (51° 30′ 30.7″,0° 7′ 32.7″ W) in box 1 (-51° 30′ 30.7″,0° 7′ 32.7″ W) in box 2 (51° 30′ 30.7″,-0° 7′ 32.7″ W) in box 3
+if calculating with less than 3 points, than fill the remaining boxes with the last coordinate pair.
+for distance between (51° 30′ 30.7″,0° 7′ 32.7″ W) and (-51° 30′ 30.7″,0° 7′ 32.7″ W), input
+(51° 30′ 30.7″,0° 7′ 32.7″ W) in box 1 (-51° 30′ 30.7″,0° 7′ 32.7″ W) in box 2 and (-51° 30′ 30.7″,0° 7′ 32.7″ W) in box 3
+Home/starting coordinate is hard coded at (42.5735402,-83.0569237),since my home isn't moving anytime soon.
+Use commas. Any character that breaks the detectable string will work, but commas are the most straight-forward and intuitive option. 
+parenthesis are not necessary. All coordinate slots filled is necessary. don't do (51° 30.7″,0° W) do (51° 0′ 30.7″,0° 0′ 0″ W)
+map plotting runs on predfined pixels, so usage on any screen other than my own will break the visual aspect. I could have fixed using screen % if I had more time, but I've been pretty busy lately (massive understatement).
+the visual plotting is independent of the actual calculation, so it not working won't change final numbers.
 </section>
 <button id = reset_button>
     Reset Button
